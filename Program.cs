@@ -38,7 +38,7 @@ public static class Program {
     }
 
     private static async Task<string> TellAiYourName(IAiService aiService, string name) {
-        var answer = await aiService.AskAiAsync(Prompts.GetXyzPrompt(name));
+        var answer = await aiService.AskAiAsync($"My name is {name}");
         return answer;
     }
 }
