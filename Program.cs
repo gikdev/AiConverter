@@ -1,21 +1,52 @@
-﻿using AiConverter.Cli.Data.Models;
+﻿using System.Text.Encodings.Web;
+using System.Text.Json;
+using AiConverter.Cli.Data.Models;
 using AiConverter.Cli.DTOs;
 using AiConverter.Cli.Misc;
 using AiConverter.Cli.Repositories;
 using AiConverter.Cli.Services;
+using DotNetEnv;
 
 namespace AiConverter.Cli;
 
 public static class Program {
     public static async Task Main() {
-        var repo = new GnjConclusionsRepositoryFake();
-        var firstGnj = (await repo.List()).FirstOrDefault();
-        if (firstGnj is null) return;
+        Env.Load();
 
-        var prompt = Prompts.GetGnjConclusionPrompt(firstGnj.MapToInputDto());
-        var aiService = new AiServiceFake();
-        var answer = await aiService.AskAiAsync(prompt);
-        Console.WriteLine($"Answer: {answer}");
+        var repo = new GnjConclusionsRepositoryFake();
+        var list = await repo.List();
+        if (!list.Any()) return;
+
+        var apiKey = Environment.GetEnvironmentVariable("LIARA_API_KEY");
+        var baseUrl = Environment.GetEnvironmentVariable("LIARA_BASE_URL");
+        var modelId = Environment.GetEnvironmentVariable("LIARA_MODEL_ID");
+        var outputFile = Environment.GetEnvironmentVariable("OUTPUT_TEXT_FILE");
+
+        if (
+            string.IsNullOrWhiteSpace(apiKey) ||
+            string.IsNullOrWhiteSpace(baseUrl) ||
+            string.IsNullOrWhiteSpace(outputFile) ||
+            string.IsNullOrWhiteSpace(modelId)
+        ) throw new InvalidOperationException("Missing required AI environment variables.");
+
+        var aiService = new AiService(apiKey, baseUrl, modelId);
+
+        var jsonOptions = new JsonSerializerOptions {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+
+        foreach (var gnj in list) {
+            var answer = await aiService.AskAiAsync(
+                Prompts.GetGnjConclusionPrompt(gnj.MapToInputDto())
+            );
+
+            var obj = JsonSerializer.Deserialize<object>(answer);
+
+            // Serialize again to JSONL with Persian readable
+            var jsonLine = JsonSerializer.Serialize(obj, jsonOptions);
+
+            await File.AppendAllTextAsync(outputFile, jsonLine + Environment.NewLine);
+        }
     }
 
     private static GnjConclusionInputDto MapToInputDto(this GnjConclusion i) => new(
@@ -27,23 +58,6 @@ public static class Program {
         i.KeyWord4,
         i.KeyWord5
     );
-
-    private static async Task PrintTop3(IGnjConclusionsRepository repo) {
-        var items = await repo.List(3);
-        var inputs = items.Select(i => i.MapToInputDto());
-
-        foreach (var i in inputs)
-            Console.WriteLine($"[{i.Id}] {i.Title}");
-    }
-
-    private static async Task CompleteWithAi(IAiService aiService, GnjConclusionInputDto inputDto) {
-        await aiService.AskAiAsync(inputDto.ToString());
-    }
-
-    private static async Task<string> TellAiYourName(IAiService aiService, string name) {
-        var answer = await aiService.AskAiAsync($"My name is {name}");
-        return answer;
-    }
 }
 
 // Env.Load();

@@ -4,7 +4,7 @@ using AiConverter.Cli.Data.Models;
 namespace AiConverter.Cli.Repositories;
 
 public class GnjConclusionsRepositoryFake() : IGnjConclusionsRepository {
-    private readonly string _path = "./sample-data.json";
+    private readonly string _path = "./sample-data2.json";
 
     public async Task<IEnumerable<GnjConclusion>> List() {
         if (!File.Exists(_path)) return [];
