@@ -3,7 +3,7 @@ const fs = require('fs');
 // Load JSON files
 const original = JSON.parse(fs.readFileSync('original.json', 'utf8'));
 const oldOnes = JSON.parse(fs.readFileSync('old.json', 'utf8'));
-const newOnes = JSON.parse(fs.readFileSync('new.json', 'utf8'));
+const newOnes = JSON.parse(fs.readFileSync('new3.json', 'utf8'));
 
 // Convert AI outputs to dictionary by id for easy lookup
 const oldOnesMap = Object.fromEntries(oldOnes.map(item => [item.id, item]));

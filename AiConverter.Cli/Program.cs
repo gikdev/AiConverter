@@ -32,8 +32,12 @@ public static class Program {
         var aiService = new AiService(apiKey, baseUrl, modelId);
 
         var jsonOptions = new JsonSerializerOptions {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            WriteIndented = true // makes JSON readable
         };
+
+        // Collect all outputs
+        var results = new List<object>();
 
         foreach (var gnj in list) {
             var answer = await aiService.AskAiAsync(
@@ -41,12 +45,12 @@ public static class Program {
             );
 
             var obj = JsonSerializer.Deserialize<object>(answer);
-
-            // Serialize again to JSONL with Persian readable
-            var jsonLine = JsonSerializer.Serialize(obj, jsonOptions);
-
-            await File.AppendAllTextAsync(outputFile, jsonLine + Environment.NewLine);
+            results.Add(obj!);
         }
+
+        // Serialize all results as a single JSON array
+        var json = JsonSerializer.Serialize(results, jsonOptions);
+        await File.WriteAllTextAsync(outputFile, json);
     }
 
     private static GnjConclusionInputDto MapToInputDto(this GnjConclusion i) => new(
