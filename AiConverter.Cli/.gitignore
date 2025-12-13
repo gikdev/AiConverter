@@ -1,0 +1,5 @@
+# CUSTOM:
+*.jsonl
+sample-*.json
+output-*.json
+openai*.json

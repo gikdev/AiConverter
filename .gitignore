@@ -3,10 +3,6 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
-# CUSTOM:
-*.jsonl
-sample-*.json
-
 # dotenv files
 .env
 
