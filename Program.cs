@@ -8,10 +8,13 @@ namespace AiConverter.Cli;
 
 public static class Program {
     public static async Task Main() {
-        // var repo = new GnjConclusionsRepositoryFake();
-        // await PrintTop3(repo);
+        var repo = new GnjConclusionsRepositoryFake();
+        var firstGnj = (await repo.List()).FirstOrDefault();
+        if (firstGnj is null) return;
+
+        var prompt = Prompts.GetGnjConclusionPrompt(firstGnj.MapToInputDto());
         var aiService = new AiServiceFake();
-        var answer = await TellAiYourName(aiService, "Bahrami!");
+        var answer = await aiService.AskAiAsync(prompt);
         Console.WriteLine($"Answer: {answer}");
     }
 

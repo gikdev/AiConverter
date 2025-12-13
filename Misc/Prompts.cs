@@ -12,24 +12,40 @@ Return a JSON only, with this exact structure:
     ""kw"": []
 }}
 
-Instructions:
+General Instructions:
+
+- The input text may be **old or archaic Persian**.
+- You MUST:
+  - Correct **punctuation**.
+  - Ensure **right-to-left (RTL)** Persian formatting.
+  - Rewrite old or unclear text into **modern, official, and clear Persian**,
+    understandable for the **general audience today**.
+
+Specific Instructions:
 
 1. Rewrite the input title ('{input.Title}') into a **new title** ('nt'):
-   - Make it simpler, easy to read.
-   - Use casual language that would make sense to professors and engineers.
-   - Avoid overly formal or flowery text.
-   - 'nt' cannot be empty.
+   - Text must be **Persian (Farsi)**.
+   - Use **modern, official, and readable language**.
+   - Avoid archaic expressions unless absolutely necessary.
+   - Ensure correct **Persian punctuation** (، ؛ . ؟).
+   - Keep the meaning faithful, but improve clarity.
+   - 'nt' must NOT be empty.
 
-2. Extract up to 5 keywords (as much as it makes sense) into the 'kw' array:
-   - Use information from the old title, the new title, and any existing keywords (Keyword1-Keyword5 from the input).
-   - Each keyword must be a **subcategory** of the previous keyword.
+2. Extract up to 5 keywords into the 'kw' array:
+   - Keywords must be in **Persian**.
+   - Use information from:
+     - The old title
+     - The rewritten title
+     - Existing keywords (Keyword1-Keyword5)
+   - Each keyword should be a **more specific subcategory** of the previous one.
    - Avoid empty strings.
    - Maximum of 5 keywords.
 
-3. Output rules:
-   - Only JSON; do **not** include explanations, notes, or extra text, or even backticks for code blocks (`).
-   - Ensure the JSON is **valid and parsable**.
-   - Do not include comments inside the JSON.
+3. Output Rules:
+   - Output **ONLY valid JSON**.
+   - No explanations, notes, markdown, or backticks.
+   - No comments inside JSON.
+   - JSON must be fully parsable.
 
 Input Keywords:
 - {input.Keyword1 ?? "(none)"}
