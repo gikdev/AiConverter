@@ -3,7 +3,7 @@
 namespace AiConverter.Cli.Misc;
 
 public static class Prompts {
-    public static string GetGnjConclusionPrompt(GnjConclusionInputDto input) => $@"
+   public static string GetGnjConclusionPrompt(GnjConclusionInputDto input) => $@"
 Return a JSON only, with this exact structure:
 
 {{
@@ -38,10 +38,16 @@ Specific Instructions:
      - The rewritten title
      - Existing keywords (Keyword1-Keyword5)
    - Each keyword should be a **more specific subcategory** of the previous one.
+   - Keywords must be **plain text words** (no ""#"" or symbols),
+     but follow a consistent system for future topic-based classification.
    - Avoid empty strings.
    - Maximum of 5 keywords.
 
-3. Output Rules:
+3. Final Output:
+   - The output JSON must provide a **systematic structure** of keywords,
+     so that **at the end it is possible to categorize the topics** according to these keywords (هشتگ‌ها).
+
+4. Output Rules:
    - Output **ONLY valid JSON**.
    - No explanations, notes, markdown, or backticks.
    - No comments inside JSON.

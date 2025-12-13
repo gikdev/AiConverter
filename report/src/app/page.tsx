@@ -6,11 +6,11 @@ interface DataItem {
     ot: string | null
     kw: Array<string | null>
   } | null
-  gpt5: {
+  oldOne: {
     nt: string | null
     kw: Array<string | null>
   } | null
-  gpt51: {
+  newOne: {
     nt: string | null
     kw: Array<string | null>
   } | null
@@ -28,8 +28,8 @@ export default function Page() {
           <thead>
             <tr>
               <th>متن اصلی</th>
-              <th>GPT-5</th>
-              <th>GPT-5.1</th>
+              <th>قدیمی</th>
+              <th>جدید</th>
             </tr>
           </thead>
           <tbody>
@@ -44,18 +44,18 @@ export default function Page() {
                   )}
                 </td>
                 <td>
-                  {item?.gpt5?.nt}
-                  {item?.gpt5?.kw?.length > 0 && (
+                  {item?.oldOne?.nt}
+                  {item?.oldOne?.kw?.length > 0 && (
                     <div style={{ fontSize: "0.8em", color: "#888", marginTop: "4px" }}>
-                      {item.gpt5.kw.filter(Boolean).join("، ")}
+                      {item.oldOne.kw.filter(Boolean).join("، ")}
                     </div>
                   )}
                 </td>
                 <td>
-                  {item?.gpt51?.nt}
-                  {item?.gpt51?.kw?.length > 0 && (
+                  {item?.newOne?.nt}
+                  {item?.newOne?.kw?.length > 0 && (
                     <div style={{ fontSize: "0.8em", color: "#888", marginTop: "4px" }}>
-                      {item.gpt51.kw.filter(Boolean).join("، ")}
+                      {item.newOne.kw.filter(Boolean).join("، ")}
                     </div>
                   )}
                 </td>

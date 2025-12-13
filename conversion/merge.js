@@ -2,12 +2,12 @@ const fs = require('fs');
 
 // Load JSON files
 const original = JSON.parse(fs.readFileSync('original.json', 'utf8'));
-const gpt5 = JSON.parse(fs.readFileSync('gpt5.json', 'utf8'));
-const gpt51 = JSON.parse(fs.readFileSync('gpt51.json', 'utf8'));
+const oldOnes = JSON.parse(fs.readFileSync('old.json', 'utf8'));
+const newOnes = JSON.parse(fs.readFileSync('new.json', 'utf8'));
 
 // Convert AI outputs to dictionary by id for easy lookup
-const gpt5Map = Object.fromEntries(gpt5.map(item => [item.id, item]));
-const gpt51Map = Object.fromEntries(gpt51.map(item => [item.id, item]));
+const oldOnesMap = Object.fromEntries(oldOnes.map(item => [item.id, item]));
+const newOnesMap = Object.fromEntries(newOnes.map(item => [item.id, item]));
 
 // Merge
 const merged = original.map(item => {
@@ -23,14 +23,14 @@ const merged = original.map(item => {
       item.KeyWord5,
     ]
   }
-  const gpt5 = gpt5Map[id] || null
-  const gpt51 = gpt51Map[id] || null
+  const oldOne = oldOnesMap[id] || null
+  const newOne = newOnesMap[id] || null
 
   if (original && 'Id' in original) delete original.Id
-  if (gpt5 && 'id' in gpt5) delete gpt5.id
-  if (gpt51 && 'id' in gpt51) delete gpt51.id
+  if (oldOne && 'id' in oldOne) delete oldOne.id
+  if (newOne && 'id' in newOne) delete newOne.id
 
-  return { id, original, gpt5, gpt51 };
+  return { id, original, oldOne: oldOne, newOne: newOne };
 });
 
 // Save merged JSON
